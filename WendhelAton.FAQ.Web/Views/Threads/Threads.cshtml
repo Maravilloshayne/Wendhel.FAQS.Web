@@ -1,0 +1,64 @@
+﻿@model WendhelAton.FAQ.Web.ViewModels.Threads.ThreadsViewModel
+@{
+    ViewData["Title"] = "Threads";
+}
+
+<h2>Threads</h2>
+
+
+
+<div id="maincontent">
+    <div class="container">
+        <div class="row">
+            <div class="span12">
+
+                <article>
+                    <div class="heading">
+                        <h3><strong>Alumni profile portfolio detail here</strong></h3>
+                    </div>
+                    <div class="clearfix">
+                    </div>
+
+                    <div class="row">
+                        <div class="span5">
+                            <!-- start flexslider -->
+                            <div class="container">
+                                <div class="row">
+
+                                    <div class="img">
+                                        <img src="~/threads/@Model.ThreadId/thumbnail.png" style="width:500px;height:400px;" />
+                                    </div>
+
+                                </div>
+                            </div>
+                            <!-- end flexslider -->
+                            <div class="blank10"></div>
+                            <p>@Model.Description</p>
+                        </div>
+                        <div class="span7">
+                            <aside>
+                                <div class="widget">
+                                    <h4>Threads  information</h4>
+
+                                    <ul class="project-detail"> 
+                                        <li><label>Project name :</label> @Model.Title</li>
+                                        <li><label>Content :</label> @Html.Raw(Model.Content)</li>
+                                        <li><label>Update At :</label>@Model.UpdatedAt</li>
+                                    </ul>
+                                </div>
+                            </aside>
+                        </div>
+                    </div>
+
+
+
+
+                </article>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+<!-- end article full post -->

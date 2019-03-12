@@ -1,0 +1,11 @@
+﻿@model WendhelAton.FAQ.Web.ViewModels.Faqs.FaqsViewModel
+@{
+    ViewData["Title"] = "Faq";
+}
+<!-- Subhead
+  ================================================== -->
+
+
+
+<h2>@Model.Question</h2>
+@Html.Raw(Model.Answer)

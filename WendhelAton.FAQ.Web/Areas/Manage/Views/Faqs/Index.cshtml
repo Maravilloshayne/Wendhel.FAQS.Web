@@ -1,0 +1,275 @@
+﻿@using WendhelAton.FAQ.Web.Infrastructure.Data.Models;
+@model WendhelAton.FAQ.Web.Areas.Manage.ViewModels.Faqs.IndexViewModel
+
+@{
+
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<section id="subintro" style="background-color:darkred">
+    <div class="jumbotron subhead" id="overview">
+        <div class="container">
+            <div class="row">
+                <div class="span12">
+                    <div class="centered">
+                        <h3>College of Subic Montessori,Inc.</h3>
+                        <p>
+                           Admin FAQS View
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+
+
+<a href="~/manage/faqs/create"><button type="button" class="btn btn-flat btn-primary">Create<i class="icon-1x icon-plus-sign"></i></button></a>
+
+
+<section id="maincontent">
+    <div class="container">
+        <div class="row">
+            <div class="span12">
+
+                <form class="form-search">
+                    <input id="searchKeyword" placeholder="Type Something.." value="@Model.Faqs.Keyword" type="text" class="input-medium search-query " />
+                    <button type="submit" class="btn btn-flat btn-primary">Search</button>
+                </form>
+                <h3><a href="#">FAQ View</a></h3>
+
+                <div class="container">
+                    @{
+                        if (Model.Faqs != null)
+                        {
+                            if (Model.Faqs.Items.Count > 0)
+                            {
+                                foreach (Faq faq in Model.Faqs.Items)
+                                {
+                                    <article class="blog-post">
+                                        <div class="post-heading">
+                                            <div class="row">
+                                                <div class="span5">
+                                                    <div id="@faq.Id">
+                                                        <h3>@faq.Question</h3>
+                                                        <div class="clearfix">
+                                                        </div>
+
+                                                        <dl>
+                                                            <dt>Description</dt>
+                                                            <dd> @faq.Description</dd>
+                                                            <dt>Content</dt>
+                                                            <dd> @faq.Answer</dd>
+                                                            <dt>Post Expiry </dt>
+                                                            <dd> @faq.PostExpiry</dd>
+
+
+
+                                                        </dl>
+
+
+
+                                                        <div class="widget">
+                                                            <h4></h4>
+                                                            <ul class="social-links">
+                                                                <li><a href="~/manage/faqs/update-question/@faq.Id" title="Update Title"><i class="icon-rounded icon-32 icon-file"></i></a></li>
+                                                                <li><a href="~/manage/faqs/update-description/@faq.Id" title="Update Description"><i class="icon-rounded icon-32 icon-file-alt"></i></a></li>
+                                                                <li><a href="~/manage/faqs/update-content/@faq.Id" title="Update Content"><i class="icon-rounded icon-32 icon-file-alt"></i></a></li>
+                                                                <li>
+                                                                    <a href="~/manage/faqs/delete" onclick="confirmDeleteFaq('@faq.Id','@faq.Question,@faq.Answer,@faq.Description')" title="Delete"><i class="icon-rounded icon-32 icon-trash"></i></a>
+                                                                </li>
+                                                                @{
+                                                                    if (faq.IsPublished)
+                                                                    {
+                                                                        <li><a href="#" title="Unpublish" onclick="confirmUnpublish('@faq.Id','@faq.Question')"><i class="icon-rounded icon-32 icon-remove"></i></a></li>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <li><a href="#" title="Publish" onclick="confirmPublish('@faq.Id','@faq.Question')"><i class="icon-rounded icon-32 icon-check"></i></a></li>
+                                                                    }
+                                                                }
+                                                            </ul>
+                                                        </div>
+
+
+                                                    </div>
+
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </article>
+
+
+
+
+
+
+
+                                }
+
+
+                                <div class="pagination">
+                                    <ul>
+                                        <li class="page-item"><a class="page-link" href="~/manage/faqs?pageIndex=1">First</a></li>
+                                        @{ if (Model.Faqs.PageIndex > 1)
+                                            {
+                                                <li class="page-item"><a class="page-link" href="~/manage/faqs?pageIndex=@(Model.Faqs.PageIndex - 1)">@(Model.Faqs.PageIndex - 1)</a></li>
+                                            }
+                                        }
+                                        <li class="page-item"><a class="page-link active" href="#">@(Model.Faqs.PageIndex)</a></li>
+                                        @{ if ((Model.Faqs.PageIndex + 1) <= Model.Faqs.PageCount)
+                                            {
+                                                <li class="page-item"><a class="page-link" href="~/manage/faqs?pageIndex=@(Model.Faqs.PageIndex + 1)">@(Model.Faqs.PageIndex + 1)</a></li>
+                                            }
+                                        }
+                                        <li class="page-item"><a class="page-link" href="~/manage/faqs?pageIndex=@Model.Faqs.PageCount">Last</a></li>
+                                    </ul>
+                                </div>
+                            }
+                        }
+                    }
+                </div>
+            </div>
+
+
+
+        </div>
+        <div class="span4">
+
+        </div>
+    </div>
+    </div>
+</section>
+
+
+<!--MODAL UNPUBLISH-->
+<div class="modal hide fade" id="modal-unpublish">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h3>Unpublish FAQS</h3>
+    </div>
+    <div class="modal-body">
+        <p>Are you sure you want to unpublish <span id="modal-unpublish-title"></span>?</p>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-danger" id="modal-unpublish-button">Yes</button>
+        <button type="button" class="btn" data-dismiss="modal">No</button>
+    </div>
+</div>
+
+
+<!--MODAL PUBLISH-->
+<div class="modal hide fade " id="modal-publish">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h3>Publish FAQS</h3>
+    </div>
+    <div class="modal-body">
+        <p>Are you sure you want to publish <span id="modal-publish-title"></span>?</p>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-success" id="modal-publish-button">Yes</button>
+        <button type="button" class="btn" data-dismiss="modal">No</button>
+    </div>
+</div>
+
+<!--MODAL DELETE-->
+<div class="modal hide fade " id="modal-delete-faq">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h3>Delete FAQ</h3>
+    </div>
+    <div class="modal-body">
+        <p>Are you sure you want to delete <span id="modal-delete-faq"></span>?</p>
+    </div>
+    <div class="modal-footer">
+        <a href="#" id="modal-delete-faq-confirm"><button type="button" class="btn btn-primary">Delete Faq</button></a>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+    </div>
+</div>
+
+@section pageStyles{
+    <style>
+        h2 {
+            margin-top: 30px;
+        }
+
+        .card-container {
+            margin-bottom: 30px;
+        }
+
+        .card {
+            margin-top: 15px;
+            margin-bottom: 15px;
+        }
+    </style>
+}
+
+
+@section pageScripts{
+    <script>
+        //////////////////////SEARCH/////////////////////////////////////////////////////////////////
+        function searchTrigger() {
+            window.location = "~/manage/faqs?pageIndex=1&keyword=" + $("#searchKeyword").val();
+
+        }
+        $("#searchKeyword").keyup(function (event) {
+            if (event.keyCode === 13) {
+                searchTrigger();
+            }
+        });
+        ////////////////////UNPUBLISH/////////////////////////////////////////////////////////////////
+        function confirmUnpublish(id, question) {
+            $("#modal-unpublish-title").html(question);
+            $("#modal-unpublish-button").attr("onclick", "UnPublishFaq('" + id + "')");
+            $("#modal-unpublish").modal("show");
+        }
+        function UnPublishFaq(id) {
+            $.ajax({
+                type: "POST",
+                url: "/manage/faqs/unpublish",
+                data: { id: id },
+                success: function (data) {
+                    location.reload();
+                },
+                error: function (xhr) {
+                    var response = JSON.parse(xhr.responseText);
+                    alert("Error Occured : " + response.errors[0]);
+                    location.reload();
+                }
+            });
+        }
+
+        //////////////////PUBLISH///////////////////////////////////////////////////////////////////////
+        function confirmPublish(id, question) {
+            $("#modal-publish-title").html(question);
+            $("#modal-publish-button").attr("onclick", "PublishFaq('" + id + "')");
+            $("#modal-publish").modal("show");
+        }
+        function PublishFaq(id) {
+            $.ajax({
+                type: "POST",
+                url: "/manage/faqs/publish",
+                data: { id: id },
+                success: function (data) {
+                    location.reload();
+                },
+                error: function (xhr) {
+                    var response = JSON.parse(xhr.responseText);
+                    alert("Error Occured : " + response.errors[0]);
+                    location.reload();
+                }
+            });
+        }
+        //////////////////DELETE///////////////////////////////////////////////////////////////////////
+        function confirmDeleteFaq(faqId, question) {
+            $("#modal-delete-faq-faqs").html(question);
+            $("#modal-delete-faq-confirm").attr("href", "deleteFaq" + faqId);
+            $("#modal-delete-faq").modal("show");
+        }
+    </script>
+}

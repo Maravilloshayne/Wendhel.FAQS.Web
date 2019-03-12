@@ -1,0 +1,60 @@
+﻿@model WendhelAton.FAQ.Web.Areas.Manage.ViewModels.Threads.CreateViewModel
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_PublicLayout.cshtml";
+}
+
+<section id="subintro" style="background-color:darkred">
+    <div class="jumbotron subhead" id="overview">
+        <div class="container">
+            <div class="row">
+                <div class="span12">
+                    <div class="centered">
+                        <h3>College of Subic Montessori,Inc.</h3>
+                        <p>
+                           Admin Create Threads
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<div class="row">
+    <div class="col-md-6">
+        <form action="~/manage/threads/create" method="post">
+            @Html.ValidationSummary()
+            <div class="form-group">
+                <label for="Title">Title:</label>
+                <input type="text" class="form-control" name="Title" />
+            </div>
+            <div class="form-group">
+                <label for="Description">Description</label>
+                <textarea class="form-control" rows="8" name="Description">
+                </textarea>
+            </div>
+            <div class="form-group">
+                <label for="Content">Content</label>
+                <textarea class="form-control" rows="8" name="Content">
+                </textarea>
+            </div>
+            <div class="form-group">
+                <label for="Updated At">Post Expiry:</label>
+                <input type="text" class="form-control" name="UpdateAt" id="updateAt" />
+            </div>
+
+
+            <button type="submit" class="btn btn-primary">Submit</button>
+            <a href="~/manage/threads/Index" class="btn btn-danger">Cancel</a>
+        </form>
+    </div>
+</div>
+@section pageScripts{
+    <script>
+        $(function () {
+            $("#UpdatedAt").datepicker({ dateFormat: 'dd/mm/yy' });
+        });
+    </script>
+}

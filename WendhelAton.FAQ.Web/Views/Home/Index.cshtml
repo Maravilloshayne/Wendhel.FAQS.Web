@@ -1,0 +1,126 @@
+﻿@using WendhelAton.FAQ.Web.Infrastructure.Data.Models;
+@model WendhelAton.FAQ.Web.Areas.Manage.ViewModels.Faqs.IndexViewModel
+
+@{
+    ViewData["Title"] = "Home Page";
+ 
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div>
+
+
+
+
+
+    <!--style-->
+    <style type="text/css">
+
+
+
+
+        .bs-example {
+            margin: 20px;
+        }
+
+
+        button.accordion {
+            width: 100%;
+            background-color: whitesmoke;
+            border: none;
+            outline: none;
+            text-align: left;
+            padding: 15px 20px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background-color 0.5s linear;
+        }
+
+            button.accordion:hover {
+                background-color: #f31b1b
+            }
+
+        button.accordian-content {
+            padding: 0 20px;
+            border-left-color: darkgray;
+            border-right-color: darkgray;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.2s ease-in-out;
+        }
+
+
+        .faqHeader {
+            font-size: 27px;
+            margin: 20px;
+        }
+
+        .panel-heading [data-toggle="collapse"]:after {
+            font-family: 'Glyphicons Halflings';
+            content: "e072"; /* "play" icon */
+            float: right;
+            color: #F58723;
+            font-size: 18px;
+            line-height: 22px;
+            /* rotate "play" icon from > (right arrow) to down arrow */
+            -webkit-transform: rotate(-90deg);
+            -moz-transform: rotate(-90deg);
+            -ms-transform: rotate(-90deg);
+            -o-transform: rotate(-90deg);
+            transform: rotate(-90deg);
+        }
+
+        .panel-heading [data-toggle="collapse"].collapsed:after {
+            /* rotate "play" icon from > (right arrow) to ^ (up arrow) */
+            -webkit-transform: rotate(90deg);
+            -moz-transform: rotate(90deg);
+            -ms-transform: rotate(90deg);
+            -o-transform: rotate(90deg);
+            transform: rotate(90deg);
+            color: #454444;
+        }
+    </style>
+
+
+
+
+
+    <script>
+        $(function () {
+            $("#accordion").accordion();
+        });
+
+        $(function () {
+            $("#myModal2").show();
+        });
+
+
+
+    </script>
+</div>
+
+
+
+
+
+
+
+
+
+

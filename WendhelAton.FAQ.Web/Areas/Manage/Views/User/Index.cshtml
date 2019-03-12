@@ -1,0 +1,171 @@
+﻿@using WendhelAton.FAQ.Web.Infrastructure.Data.Models;
+@model WendhelAton.FAQ.Web.Areas.Manage.ViewModels.Users.IndexViewModel;
+
+@{
+    ViewData["Title"] = "Welcome to FAQS";
+    Layout = "~/views/shared/_publiclayout.cshtml";
+}
+<section id="subintro" style="background-color:darkred">
+    <div class="jumbotron subhead" id="overview">
+        <div class="container">
+            <div class="row">
+                <div class="span12">
+                    <div class="centered">
+                        <h3>College of Subic Montessori,Inc.</h3>
+                        <p>
+                            Admin User Index
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="container">
+    <h2>Users</h2>
+    <p>Here is a paged list of all the users</p>
+    <a href="~/manage/users/create" title="Create User"><button type="button" class="btn">Create User    <i class="fas fa-plus"></i></button></a>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email Address</th>
+                <th>Gender</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                foreach (User user in Model.Users.Items)
+                {
+                    <tr>
+                        <td>@user.FirstName</td>
+                        <td>@user.LastName</td>
+                        <td>@user.EmailAddress</td>
+                        <td>@user.Gender</td>
+                        <td>
+                            <a href="#" onclick="confirmResetPassword('@user.Id', '@user.FirstName','@user.LastName')" title="Reset Password"><button type="button" class="btn"><i class="fas fa-key"></i></button></a>
+                            <a href="~/manage/users/update-profile/@user.Id" title="Update Profile"><button type="button" class="btn"><i class="fas fa-pen-square"></i></button></a>
+                            @{
+                                if (user.LoginStatus == WendhelAton.FAQ.Web.Infrastructure.Data.Enums.LoginStatus.Active)
+                                {
+                                    <a href="#" onclick="confirmDeactivateAccount('@user.Id', '@user.FirstName','@user.LastName')" title="Deactivate Account"><button type="button" class="btn"><i class="fas fa-lock"></i></button></a>
+                                }
+                                else
+                                {
+                                    <a href="#" onclick="confirmActivateAccount('@user.Id', '@user.FirstName','@user.LastName')" title="Activate Account"><button type="button" class="btn"><i class="fas fa-lock-open"></i></button></a>
+                                }
+                            }
+                            <a href="#" onclick="confirmDeleteUser('@user.Id', '@user.FirstName','@user.LastName')" title="Delete User"><button type="button" class="btn"><i class="fas fa-times"></i></button></a>
+                        </td>
+
+                    </tr>
+                }
+            }
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="4">
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination">
+                            <li class="page-item"><span class="form-control-plaintext">Page&nbsp;&nbsp;&nbsp;</span></li>
+                            <li class="page-item"><input type="number" value="@Model.Users.PageIndex" class="form-control" style="width:50px;" onKeydown="javascript: if(event.keyCode = 13 && isNaN(parseInt($(this).val())==false)) window.location='~/manage/users/index?pageIndex=' + (isNaN(parseInt($(this).val())) ? 1 : parseInt($(this).val()));" /></li>
+                            <li class="page-item"><span class="form-control-plaintext">&nbsp;&nbsp;&nbsp;of @Model.Users.PageCount&nbsp;&nbsp;&nbsp;</span></li>
+                            <li class="page-item"><a class="page-link" href="#"><span aria-hidden="true">&laquo;</span></a></li>
+                            <li class="page-item"><a class="page-link" href="#">1</a></li>
+                            <li class="page-item"><a class="page-link" href="#">2</a></li>
+                            <li class="page-item"><a class="page-link" href="#">3</a></li>
+                            <li class="page-item"><a class="page-link" href="#"><span aria-hidden="true">&raquo;</span></a></li>
+                        </ul>
+                    </nav>
+                </td>
+            </tr>
+        </tfoot>
+
+    </table>
+</div>
+
+<!--MODAL RESET PASSWORD-->
+<div class="modal hide fade" id="modal-reset-password">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h5>Reset Password</h5>
+    </div>
+    <div class="modal-body">
+        <p>Are you sure you want to reset the password of <span id="modal-reset-password-username"></span>?</p>
+    </div>
+    <div class="modal-footer">
+        <a href="#" id="modal-reset-password-confirm"><button type="button" class="btn btn-primary">Reset Password</button></a>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+    </div>
+</div>
+
+
+<!--MODAL RESET ACCOUNT STATUS-->
+<div class="modal hide fade" id="modal-account-status">
+    <div class="modal-header">
+        <h5 class="modal-title"><span class="modal-account-status-label"></span> Account</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <p>Are you sure you want to <span class="modal-account-status-label"></span> the account of <span id="modal-account-status-username"></span>?</p>
+    </div>
+    <div class="modal-footer">
+        <a href="#" id="modal-account-status-confirm"><button type="button" class="btn btn-primary"><span class="modal-account-status-label"></span> Account</button></a>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+    </div>
+</div>
+
+
+
+<!--MODAL DELETE USER-->
+<div class="modal hide fade"  id="modal-delete-user">
+    <div class="modal-header">
+        <h5 class="modal-title">Delete User</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <p>Are you sure you want to delete <span id="modal-delete-user-username"></span>?</p>
+    </div>
+    <div class="modal-footer">
+        <a href="#" id="modal-delete-user-confirm"><button type="button" class="btn btn-primary">Delete User</button></a>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+    </div>
+</div>
+
+
+@section pageScripts{
+    <script type="text/javascript">
+        function confirmResetPassword(userId, userName) {
+            $("#modal-reset-password-username").html(userName);
+            $("#modal-reset-password-confirm").attr("href", "/manage/users/reset-password/" + userId);
+            $("#modal-reset-password").modal("show");
+        }
+
+        function confirmActivateAccount(userId, userName) {
+            $("#modal-account-status-username").html(userName);
+            $(".modal-account-status-label").html("Activate");
+            $("#modal-account-status-confirm").attr("href", "/manage/users/change-status/Active/" + userId);
+            $("#modal-account-status").modal("show");
+        }
+        function confirmDeactivateAccount(userId, userName) {
+            $("#modal-account-status-username").html(userName);
+            $(".modal-account-status-label").html("Deactivate");
+            $("#modal-account-status-confirm").attr("href", "/manage/users/change-status/Locked/" + userId);
+            $("#modal-account-status").modal("show");
+        }
+        function confirmDeleteUser(userId, userName) {
+            $("#modal-delete-user-username").html(userName);
+            $("#modal-delete-user-confirm").attr("href", "/manage/users/delete/" + userId);
+            $("#modal-delete-user").modal("show");
+        }
+
+
+    </script>}
+
+

@@ -1,0 +1,113 @@
+﻿@using WendhelAton.FAQ.Web.Infrastructure.Data.Models;
+@using WendhelAton.FAQ.Web.Infrastructure.Security;
+@model WendhelAton.FAQ.Web.ViewModels.Faqs.IndexViewModel
+
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h2>CSM Bataan FAQS</h2>
+
+
+    <section id="navtop" style="background-color:darkred">
+        <div class="jumbotron subhead" id="overview">
+            <div class="container">
+                <div class="row">
+                    <div class="span12">
+                        <div class="centered">
+                            <h3>College of Subic Montessori,Inc.</h3>
+                            <p>
+                                Frequently Asked and Question
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    Welcome @WebUser.FullName
+    <!--end: Accordion -->
+
+    <section>
+        <div id="maincontent">
+
+
+            <div class="row">
+                <div class="span12">
+                    <h4>FAQS</h4>
+
+                    @{
+
+                        foreach (Faq faq in Model.Faqs)
+                        {
+
+                            <div class="accordion" id="accordion_@faq.Id">
+                                <div class="accordion-group">
+                                    <div class="accordion-heading">
+                                        <a class="accordion-toggle active" data-toggle="collapse" data-parent="#accordion_@faq.Id" href="#collapse_@faq.Id">
+                                            <i class="icon-minus"></i> @faq.Question
+                                        </a>
+                                    </div>
+                                    <div id="collapse_@faq.Id" class="accordion-body collapse in">
+                                        <div class="accordion-inner">
+                                            @Html.Raw(@faq.Answer)
+
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        }
+                    }
+
+
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+
+@section pageScripts{`
+    <script src="~/js/date_format.js"></script>
+    <script>
+    var page = @("1");
+    var calling = false;
+    $(window).scroll(function () {
+        if (($(window).height() + $(window).scrollTop()) + 1
+            >= $(document).height()) {
+
+            if (calling == false) {
+                calling = true;
+                $.ajax({
+                    type: "GET",
+                    url: "/faqs/feed?pageIndex=" + (page + 1),
+                    success: function (rsp) {
+                        page = page + 1;
+                        calling = false;
+                        $.each(rsp, function (index, item) {
+                            var itemTimestamp = new Date(Date.parse(item.timestamp));
+                            var markup = "<article>";
+                            markup = markup + "<div class='info'>";
+                            markup = markup + "<img class='card-img-top' src='../faqs/" + item.id + "/banner.png' alt='Card image cap' style='max-width:750px;max-height:300px;'>";
+                            markup = markup + "<h3>" + item.title +  "</h3>";
+                            markup = markup + "<p class='info-line'><span class='time'>" + itemTimestamp.format("dddd, mmmm d, yyyy hh:MM TT") + "</span></p>";
+                            markup = markup + "<p>" + item.description + "</p>";
+                            markup = markup + "<p><a href='~/faqs/" + item.Id + "' class='btn btn-primary'>Read More &rarr;</a></p>";
+                            markup = markup + "</div>";
+                            markup = markup + "</article>";
+
+                            $("#post-container").append(markup);
+                        });
+                    }
+                });
+            }
+        }
+    });
+    </script>
+}
+
